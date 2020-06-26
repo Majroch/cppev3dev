@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ls tests/*.py | xargs -n1 -P4 python
