@@ -70,15 +70,15 @@ def initialize_compilator(config: libconfig.Config):
 	if distro == "Windows":
 		return False
 	elif distro == "arch":
-		tmp_dir = config.get('tmp')
+		# tmp_dir = config.get('tmp')
 		
-		output = os.popen('whereis gcc-arm-linux-gnueabi | awk '{print $2}'").read().strip('\n')
+		output = os.popen("whereis gcc-arm-linux-gnueabi | awk '{print $2}'").read().strip('\n')
 		if output == "":
-			os.system('') # TODO
+			os.system('echo "Hello World!"') # TODO
 		else:
 			return True
 	elif distro == "ubuntu":
-		output = os.popen('whereis gcc-arm-linux-gnueabi | awk '{print $2}'").read().strip('\n')
+		output = os.popen("whereis gcc-arm-linux-gnueabi | awk '{print $2}'").read().strip('\n')
 		if output == "":
 			os.system('sudo apt install gcc-arm-linux-gnueabi g++-arm-linux-gnueabi')
 		else:
