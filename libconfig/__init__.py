@@ -27,10 +27,12 @@ where:
 				file.write('password = maker\n')
 				file.write('ip = 127.0.0.1\n')
 				file.write('compiler = arm-linux-gnueabi-g++\n')
+				file.write('tmp = ./tmp')
 				config['username'] = "robot"
 				config['password'] = "maker"
 				config['ip'] = "127.0.0.1"
 				config['compiler'] = "arm-linux-gnueabi-g++"
+				config['tmp'] = "./tmp/"
 		self.config = config
 		
 	def _purify_config(self, file):

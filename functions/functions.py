@@ -1,4 +1,6 @@
 import platform, os
+import libconfig
+
 host_os = platform.system()
 
 def isAdmin():
@@ -54,4 +56,32 @@ else:
 		except:
 			print("Cannot load all required packages!")
 			exit()
-			
+
+def get_linux_os():
+	config = libconfig.Config('/etc/os-release')
+	return config.get('ID')
+
+def initialize_compilator(config: libconfig.Config):
+	if host_os == "Windows":
+		distro = "Windows"
+	else:
+		distro = get_linux_os()
+
+	if distro == "Windows":
+		return False
+	elif distro == "arch":
+		tmp_dir = config.get('tmp')
+		
+		output = os.popen('whereis gcc-arm-linux-gnueabi | awk '{print $2}'").read().strip('\n')
+		if output == "":
+			os.system('') # TODO
+		else:
+			return True
+	elif distro == "ubuntu":
+		output = os.popen('whereis gcc-arm-linux-gnueabi | awk '{print $2}'").read().strip('\n')
+		if output == "":
+			os.system('sudo apt install gcc-arm-linux-gnueabi g++-arm-linux-gnueabi')
+		else:
+			return True
+	else:
+		return False

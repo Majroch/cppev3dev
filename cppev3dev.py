@@ -22,9 +22,9 @@ config_files = {
 	"logs": '/var/log/cppev3dev/logs.log'
 }
 
-tmp_dir = "./tmp/"
-
 config = libconfig.Config(config_files['config'])
+
+tmp_dir = config.get('tmp')
 
 brick = libbrick.Brick(config.get('username'), config.get('password'), config.get('ip'))
 
