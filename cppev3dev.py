@@ -9,74 +9,20 @@
 # 
 ##########################
 import os
-import platform
 import subprocess
 from getpass import getpass
 
-host_os = platform.system()
-
-def isAdmin(hostos):
-	if hostos == "Windows":
-		try:
-			temp = os.listdir(os.sep.join([os.environ.get('SystemRoot','C:\\windows'),'temp']))
-		except:
-			return False
-		else:
-			return True
-	else:
-		if 'SUDO_USER' in os.environ:
-			return True
-		else:
-			return False
-
-def cls():
-	if(host_os == "Windows"):
-		os.system("cls")
-	else:
-		os.system('clear')
-
-if host_os == "Windows":
-	try:
-		from msvcrt import getch
-	except ImportError:
-		print("Trying to install all required packages from requirements_windows.txt")
-		if isAdmin(host_os):
-			os.system('pip install -r requirements_windows.txt')
-		else:
-			print("To install required packages, need to have an admin privileges first!")
-			exit()
-		try:
-			from msvcrt import getch
-		except:
-			print("Cannot load all required packages!")
-			exit()
-	except:
-		print("Cannot load all required packages!")
-		exit()
-else:
-	try:
-		from getch import getch
-	except ImportError:
-		print("Trying to install all required packages from requirements_linux.txt")
-		if isAdmin(host_os):
-			os.system('sudo pip install -r requirements_linux.txt')
-		else:
-			print("To install required packages, need to have an admin privileges first!")
-			exit()
-		try:
-			from getch import getch
-		except:
-			print("Cannot load all required packages!")
-			exit()
-			
+import functions as func
 import libbrick
 import libconfig
 
 config_files = {
 	"error": "/var/log/cppev3dev/errors.log",
-	"config": "/etc/cppev3dev/config.cfg",
+	"config": "./config.cfg",
 	"logs": '/var/log/cppev3dev/logs.log'
 }
+
+tmp_dir = "./tmp/"
 
 config = libconfig.Config(config_files['config'])
 
@@ -108,13 +54,13 @@ if __name__ == "__main__":
 	menu_pos = 0
 	try:
 		while True:
-			cls()
+			func.cls()
 			print("---------------------------")
 			print("|      EV3DEV LINKER      |")
 			print("---------------------------")
 			print("Login:", brick.ssh['username'])
 			print("Address IP:", brick.ssh['ip'])
-			print("Running as Admin:", isAdmin(host_os))
+			print("Running as Admin:", func.isAdmin())
 			print("Brick output:", out)
 			print("---------------------------")
 			print("|           MENU          |")
@@ -126,9 +72,9 @@ if __name__ == "__main__":
 					print(options[selected][option][1])
 			print("---------------------------")
 			try:
-				key = getch()
+				key = func.getch()
 				if key == b'\xe0' or key == "[":
-					key = getch()
+					key = func.getch()
 					if key == b'P' or key == "B":
 						menu_pos += 1
 					elif key == b'H' or key == "A":
@@ -161,15 +107,14 @@ if __name__ == "__main__":
 					elif options[selected][menu_pos][0] == "connect":
 						try:
 							out = brick.send('whoami')
-						except BrickCannotSendException:
+						except libbrick.BrickCannotSendException:
 							out = False
-						if out == [config.get('username')]:
-							out = True
 					elif options[selected][menu_pos][0] == "compile1":
-						print("Initializing!")
-						os.system("git clone https://majroch.pl/git/ev3dev-compile.git")
-						os.system("cp ev3dev-compile/ev3dev/ev3dev* ./")
-						os.system("rm -rf ev3dev-compile")
+						if not os.path.isfile("./ev3dev.h") or not os.path.isfile('./ev3dev.cpp'):
+							print("Initializing!")
+							os.system(f"git clone https://github.com/Majroch/ev3dev-compile.git {tmp_dir}ev3dev-compile")
+							os.system(f"cp {tmp_dir}ev3dev-compile/ev3dev/ev3dev* ./")
+							os.system(f"rm -rf {tmp_dir}ev3dev-compile")
 						
 						filename = input("Enter file localization: ")
 						output = input("Enter output filename: ")
