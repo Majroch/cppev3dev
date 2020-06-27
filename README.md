@@ -7,7 +7,7 @@
     - [Ubuntu-based systems](#ubuntu-based-systems)
     - [Other systems](#other-systems)
   - [Usage](#usage)
-    - [Linux](#linux)
+    - [Ubuntu](#ubuntu)
     - [Other systems](#other-systems-1)
   - [TODO](#todo)
 
