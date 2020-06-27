@@ -69,11 +69,12 @@ def initialize_compilator(config: libconfig.Config):
 	
 	compiler = config.get('compiler')
 
+	awk = "'{print $2}'"
+
 	if distro == "Windows":
 		return False
 	elif distro == "arch":
 		# tmp_dir = config.get('tmp')
-		awk = "'{print $2}'"
 		output = os.popen("whereis {compiler} | awk {awk}".format(compiler=compiler, awk=awk)).read().strip('\n')
 		if output == "":
 			os.system('echo "{compiler}"'.format(compiler=compiler)) # TODO

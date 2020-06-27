@@ -17,9 +17,9 @@ import libbrick
 import libconfig
 
 config_files = {
-	"error": "/var/log/cppev3dev/errors.log",
+	"error": "./errors.log",
 	"config": "./config.cfg",
-	"logs": '/var/log/cppev3dev/logs.log'
+	"logs": './logs.log'
 }
 
 config = libconfig.Config(config_files['config'])
