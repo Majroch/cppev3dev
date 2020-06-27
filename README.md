@@ -47,5 +47,6 @@ Run program:
 ```bash
 docker run -ti \
            -v $PWD/:/compile
+           --name cppev3dev
            majroch/cppev3dev:latest
 ```
