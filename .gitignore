@@ -3,3 +3,6 @@
 test.cpp
 config.cfg
 tmp
+test?
+test
+!tests

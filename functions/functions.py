@@ -66,22 +66,48 @@ def initialize_compilator(config: libconfig.Config):
 		distro = "Windows"
 	else:
 		distro = get_linux_os()
+	
+	compiler = config.get('compiler')
 
 	if distro == "Windows":
 		return False
 	elif distro == "arch":
 		# tmp_dir = config.get('tmp')
-		
-		output = os.popen("whereis gcc-arm-linux-gnueabi | awk '{print $2}'").read().strip('\n')
+		awk = "'{print $2}'"
+		output = os.popen("whereis {compiler} | awk {awk}".format(compiler=compiler, awk=awk)).read().strip('\n')
 		if output == "":
-			os.system('echo "Hello World!"') # TODO
+			os.system('echo "{compiler}"'.format(compiler=compiler)) # TODO
 		else:
 			return True
 	elif distro == "ubuntu":
-		output = os.popen("whereis gcc-arm-linux-gnueabi | awk '{print $2}'").read().strip('\n')
+		output = os.popen("whereis {compiler} | awk {awk}".format(compiler=compiler, awk=awk)).read().strip('\n')
 		if output == "":
-			os.system('sudo apt install gcc-arm-linux-gnueabi g++-arm-linux-gnueabi')
+			os.system('sudo apt install {compiler}'.format(compiler=compiler))
 		else:
 			return True
 	else:
 		return False
+
+def compiling(config: libconfig.Config) -> str:
+	compilling_first = "{compiler} -Wall -static -static-libgcc -pthread -c {filename} -o {output}"
+	compilling_last = "{compiler} -Wall -static -static-libgcc -pthread {filenames} -o {output}"
+
+	filename = input("Enter file localization: ")
+	output = input("Enter output filename: ")
+
+	print("Initializing!")
+	tmp_dir = config.get('tmp')
+	if not os.path.isfile("./ev3dev.h") or not os.path.isfile('./ev3dev.cpp'):
+		os.system(f"git clone https://github.com/Majroch/ev3dev-compile.git {tmp_dir}ev3dev-compile")
+		os.system(f"cp {tmp_dir}ev3dev-compile/ev3dev/ev3dev* ./")
+		os.system(f"rm -rf {tmp_dir}ev3dev-compile")
+	
+	initialize_compilator(config)
+
+	print("Trying to compile!")
+	
+	os.system(compilling_first.format(compiler=config.get('compiler'), filename=filename, output=output+".o"))
+	os.system(compilling_first.format(compiler=config.get('compiler'), filename="ev3dev.cpp", output="ev3dev.o"))
+	os.system(compilling_last.format(compiler=config.get('compiler'), filenames="ev3dev.o "+output+".o", output=output))
+
+	return output

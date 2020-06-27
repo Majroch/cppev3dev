@@ -2,6 +2,7 @@
 import subprocess
 import time
 import platform
+import os
 
 #if platform.system() == "Windows":
 #	if platform.architecture() == "64bit":
@@ -11,12 +12,16 @@ import platform
 #else:
 #	ssh = "sshpass -p {password} ssh {username}@{ip} -o StrictHostKeyChecking=accept-new"
 ssh = "sshpass -p {password} ssh {username}@{ip} -o StrictHostKeyChecking=accept-new"
+scp = "sshpass -p {password} scp {filename} {username}@{ip}:/home/{username}/"
 
 class BrickMissingOptionException(Exception):
 	pass
 class BrickNoConnectedException(Exception):
 	pass
 class BrickCannotSendException(Exception):
+	pass
+
+class BrickCannotSendFileException(Exception):
 	pass
 
 class Brick:
@@ -69,7 +74,22 @@ where:
 						out.append(line)
 			else:
 				out.append(line.decode().strip().replace('\r\n', "").replace('/n', ''))
+			
+			temp = terminal.stderr.readlines()
+			
+			if type(temp) == type([]):
+				for line in temp:
+					line = line.decode().strip().replace('\r\n', "").replace('/n', '')
+					if line != command and line != "":
+						out.append(line)
+			else:
+				out.append(line.decode().strip().replace('\r\n', "").replace('/n', ''))
 			return out
 		except:
 			raise(BrickCannotSendException("Cannot send command: " + str(command)))
-		
+	
+	def send_file(self, filename):
+		"""Gets: filename
+where:
+	filename - filename to send"""
+		os.popen(scp.format(username=self.ssh['username'], ip=self.ssh['ip'], password=self.ssh['password'], filename=filename)).read()
