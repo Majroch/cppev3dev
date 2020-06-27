@@ -9,7 +9,6 @@
   - [Usage](#usage)
     - [Ubuntu](#ubuntu)
     - [Other systems](#other-systems-1)
-  - [TODO](#todo)
 
 ## What it is?
 This package provides basic compiling, sending and debugging capabillities for Newbies.
@@ -25,7 +24,17 @@ sudo pip3 install -r requirements_linux.txt
 ```
 
 ### Other systems
-You'll need to run in docker: [there's a link](https://hub.docker.com/repository/docker/majroch/cppev3dev)
+You'll need to run this program in docker.
+
+Search how to install Docker for your specific system. Then you can pull image from repo:
+```bash
+docker pull majroch/cppev3dev:latest
+```
+
+or build it yourself:
+```bash
+docker build . -t your_tag_here
+```
 
 ## Usage
 Run program:
@@ -35,11 +44,8 @@ Run program:
 ```
 
 ### Other systems
-Go to docker page [here](https://hub.docker.com/repository/docker/majroch/cppev3dev)
-
-## TODO
-- [ ] Requirements:
-   - [ ] mono / .NET
-   - [ ] Python
-   - [ ] ev3dev-lang-cpp
-   - [ ] arm cross-compiler from source
+```bash
+docker run -ti \
+           -v $PWD/:/compile
+           majroch/cppev3dev:latest
+```
