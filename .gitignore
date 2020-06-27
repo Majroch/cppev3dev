@@ -6,3 +6,4 @@ tmp
 test?
 test
 !tests
+!testcode/*
