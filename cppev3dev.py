@@ -28,12 +28,10 @@ tmp_dir = config.get('tmp')
 
 brick = libbrick.Brick(config.get('username'), config.get('password'), config.get('ip'))
 
-compilling_first = "{compiler} -Wall -static -static-libgcc -pthread -c {filename} -o {output}"
-compilling_last = "{compiler} -Wall -static -static-libgcc -pthread {filenames} -o {output}"
-
 options = {
 	"menu": [
 		['connect', 'Check Connection'],
+		['customCommand', 'Send Custom Command'],
 		['compile2', 'Compile & upload'],
 		['compile1', 'Compile'],
 		['config', 'Configure'],
@@ -107,24 +105,24 @@ if __name__ == "__main__":
 					elif options[selected][menu_pos][0] == "connect":
 						try:
 							out = brick.send('whoami')
+							if out == ['pi']:
+								out = True
 						except libbrick.BrickCannotSendException:
 							out = False
 					elif options[selected][menu_pos][0] == "compile1":
-						if not os.path.isfile("./ev3dev.h") or not os.path.isfile('./ev3dev.cpp'):
-							print("Initializing!")
-							os.system(f"git clone https://github.com/Majroch/ev3dev-compile.git {tmp_dir}ev3dev-compile")
-							os.system(f"cp {tmp_dir}ev3dev-compile/ev3dev/ev3dev* ./")
-							os.system(f"rm -rf {tmp_dir}ev3dev-compile")
-						
-						filename = input("Enter file localization: ")
-						output = input("Enter output filename: ")
-						print("Trying to compile!")
-						
-						os.system(compilling_first.format(compiler=config.get('compiler'), filename=filename, output=output+".o"))
-						os.system(compilling_first.format(compiler=config.get('compiler'), filename="ev3dev.cpp", output="ev3dev.o"))
-						os.system(compilling_last.format(compiler=config.get('compiler'), filenames="ev3dev.o "+output+".o", output=output))
-						
+						func.compiling(config)
 						input("Finished! Click enter...")
+					elif options[selected][menu_pos][0] == "compile2":
+						filename = func.compiling(config)
+						brick.send_file(filename)
+						input("Finished! Click enter...")
+					elif options[selected][menu_pos][0] == "customCommand":
+						command = input("Insert command: ")
+						try:
+							out = brick.send(command)
+						except libbrick.BrickCannotSendException:
+							out = False
+
 						
 					
 			except OverflowError:
