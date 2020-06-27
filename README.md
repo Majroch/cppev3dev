@@ -5,11 +5,10 @@
   - [What it is?](#what-it-is)
   - [Pre-Requirements](#pre-requirements)
     - [Ubuntu-based systems](#ubuntu-based-systems)
-    - [Arch-based systems](#arch-based-systems)
-    - [Windows](#windows)
+    - [Other systems](#other-systems)
   - [Usage](#usage)
-    - [Linux](#linux)
-    - [Windows](#windows-1)
+    - [Ubuntu](#ubuntu)
+    - [Other systems](#other-systems-1)
   - [TODO](#todo)
 
 ## What it is?
@@ -25,33 +24,18 @@ sudo apt install python3 pip3
 sudo pip3 install -r requirements_linux.txt
 ```
 
-### Arch-based systems
-```bash
-pacman -Suy python python-pip
-pip install -r requirements_linux.txt
-```
-
-### Windows
-First, install python3 with pip from: [here](https://www.python.org/downloads/windows/)
-
-***Note: Make sure Python is in PATH environment variable***
-
-Then open `cmd` with Administrator privileges and run:
-```cmd
-pip install -r requirements_windows.txt
-```
+### Other systems
+You'll need to run in docker: [there's a link](https://hub.docker.com/repository/docker/majroch/cppev3dev)
 
 ## Usage
 Run program:
-### Linux
+### Ubuntu
 ```bash
 ./cppev3dev.py
 ```
-### Windows
-From `cmd` go to project folder, and then:
-```cmd
-cppev3dev.py
-```
+
+### Other systems
+Go to docker page [here](https://hub.docker.com/repository/docker/majroch/cppev3dev)
 
 ## TODO
 - [ ] Requirements:
