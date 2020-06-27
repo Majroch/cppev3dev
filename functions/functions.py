@@ -1,5 +1,5 @@
 import platform, os
-import libconfig
+import libconfig, libbrick
 
 host_os = platform.system()
 
@@ -112,3 +112,12 @@ def compiling(config: libconfig.Config) -> str:
 	os.system(compilling_last.format(compiler=config.get('compiler'), filenames="ev3dev.o "+output+".o", output=output))
 
 	return output
+
+def checkConnection(brick: libbrick.Brick):
+	try:
+		out = brick.send('whoami')
+		if len(out) > 0:
+			return True
+	except libbrick.BrickCannotSendException:
+		return False
+	return False

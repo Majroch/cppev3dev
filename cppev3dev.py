@@ -33,7 +33,8 @@ options = {
 		['connect', 'Check Connection'],
 		['customCommand', 'Send Custom Command'],
 		['compile2', 'Compile & upload'],
-		['compile1', 'Compile'],
+		['compile1', 'Only Compile'],
+		['extra', "Extra commands"],
 		['config', 'Configure'],
 		['exit', 'Exit']
 	],
@@ -42,7 +43,11 @@ options = {
 		['updatep', "Update Password"],
 		['updateai', "Update Address IP"],
 		['menu', "Back"]
-	]
+	],
+	"extra": [
+		['addSudoers', "Add 'NOPASSWD' to /etc/sudoers file"],
+		['menu', "Back"]
+	],
 }
 
 selected = 'menu'
@@ -90,6 +95,9 @@ if __name__ == "__main__":
 					elif options[selected][menu_pos][0] == "menu":
 						selected = options[selected][menu_pos][0]
 						menu_pos = 0
+					elif options[selected][menu_pos][0] == "extra":
+						selected = options[selected][menu_pos][0]
+						menu_pos = 0
 					elif options[selected][menu_pos][0] == "updatel":
 						inp = input("Enter new login: ")
 						config.update('username', inp)
@@ -103,12 +111,7 @@ if __name__ == "__main__":
 						config.update('ip', inp)
 						brick.update('ip', inp)
 					elif options[selected][menu_pos][0] == "connect":
-						try:
-							out = brick.send('whoami')
-							if out == ['pi']:
-								out = True
-						except libbrick.BrickCannotSendException:
-							out = False
+						out = func.checkConnection(brick)
 					elif options[selected][menu_pos][0] == "compile1":
 						func.compiling(config)
 						input("Finished! Click enter...")
@@ -122,7 +125,13 @@ if __name__ == "__main__":
 							out = brick.send(command)
 						except libbrick.BrickCannotSendException:
 							out = False
-
+					elif options[selected][menu_pos][0] == "addSudoers":
+						if(func.checkConnection(brick)):
+							echo_command = "'" + brick.ssh['username'] + "	ALL=(ALL:ALL) NOPASSWD: ALL'"
+							password = brick.ssh["password"]
+							out = brick.send(f'echo {password} | sudo -S sh -c "echo {echo_command} >> /etc/sudoers"')
+						else:
+							out = "Cannot add 'NOPASSWD' to /etc/sudoers file!"
 						
 					
 			except OverflowError:
